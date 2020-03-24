@@ -6,6 +6,10 @@ import torchvision.transforms as transforms
 import config as con
 from models import Net
 from time import time
+try:
+    from apex import amp
+except:
+    print('the apex module does not exists')
 
 transform = transforms.Compose(
     [transforms.ToTensor(),
@@ -32,6 +36,8 @@ if con.use_cuda:
 else:
     net = Net()
 optimizer = optim.Adam(net.parameters())
+if con.use_apex:
+    net, optimizer = amp.initialize(net, optimizer, opt_level=con.apex_opt_level)
 criterion = nn.CrossEntropyLoss()
 print('num of net parameters:', sum(p.numel() for p in net.parameters()))
 
@@ -46,10 +52,16 @@ def train():
 
         out = net(inputs)
         loss = criterion(out, labels)
-        loss.backward()
+        if con.use_apex:
+            with amp.scale_loss(loss, optimizer) as scaled_loss:
+                scaled_loss.backward()
+        else:
+            loss.backward()
+
         optimizer.step()
         epoch_train_loss += loss.item()
     return epoch_train_loss
+
 
 def evaluate():
     epoch_test_loss = 0
