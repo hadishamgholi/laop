@@ -6,6 +6,7 @@ import torchvision.transforms as transforms
 import config as con
 from models import Net
 from time import time
+from utils import accuracy
 try:
     from apex import amp
 except:
@@ -44,6 +45,7 @@ print('num of net parameters:', sum(p.numel() for p in net.parameters()))
 
 def train():
     epoch_train_loss = 0
+    epoch_train_acc = 0
     for batch in iter(trainloader):
         optimizer.zero_grad()
         inputs, labels = batch
@@ -60,11 +62,13 @@ def train():
 
         optimizer.step()
         epoch_train_loss += loss.item()
-    return epoch_train_loss
+        epoch_train_acc += accuracy(out, labels)
+    return epoch_train_loss, epoch_train_acc / len(trainset)
 
 
 def evaluate():
     epoch_test_loss = 0
+    epoch_test_acc = 0
     for batch in iter(testloader):
         inputs, labels = batch
         if con.use_cuda:
@@ -74,16 +78,19 @@ def evaluate():
             out = net(inputs)
             loss = criterion(out, labels)
         epoch_test_loss += loss.item()
-    return epoch_test_loss
+        epoch_test_acc += accuracy(out.data, labels)
+    return epoch_test_loss, epoch_test_acc / len(testset)
 
 
 def run():      
     for e in range(con.epochs):
         t1 = time()
-        epoch_train_loss = train()
-        epoch_test_loss = evaluate()
+        tr_loss, tr_acc = train()
+        te_loss, te_acc = evaluate()
         t = time() - t1
-        print(f"epoch {e}, train loss: {epoch_train_loss}, test loss: {epoch_test_loss}, in {t} secs")
+        print("epoch {}| train loss: {:.5f}, acc: {:.5f} | test loss: {:.5f}, acc: {:.5f} | in {:.5f} secs".format(
+            e, tr_loss, tr_acc, te_loss, te_acc, t
+        ))
 
 
 if __name__ == "__main__":
