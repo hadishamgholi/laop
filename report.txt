@@ -1,0 +1,46 @@
+train as usual:
+epoch 0| train loss: 1286.06212, acc: 0.40082 | test loss: 226.64002, acc: 0.47420 | in 47.88497 secs
+iter 781/782
+epoch 1| train loss: 1056.38056, acc: 0.51446 | test loss: 205.76409, acc: 0.52490 | in 53.12092 secs
+iter 781/782
+epoch 2| train loss: 961.14252, acc: 0.56152 | test loss: 188.98570, acc: 0.56590 | in 52.84366 secs
+iter 781/782
+epoch 3| train loss: 900.07177, acc: 0.59190 | test loss: 183.52827, acc: 0.58290 | in 60.55404 secs
+iter 781/782
+epoch 4| train loss: 845.48225, acc: 0.61674 | test loss: 177.03088, acc: 0.60080 | in 59.82203 secs
+iter 781/782
+epoch 5| train loss: 802.17806, acc: 0.63694 | test loss: 172.13903, acc: 0.61370 | in 56.19071 secs
+iter 781/782
+epoch 6| train loss: 767.32821, acc: 0.65272 | test loss: 172.20095, acc: 0.61440 | in 61.43468 secs
+iter 781/782
+epoch 7| train loss: 737.22988, acc: 0.66852 | test loss: 167.09990, acc: 0.62620 | in 59.26426 secs
+iter 781/782
+epoch 8| train loss: 707.87989, acc: 0.68204 | test loss: 163.72224, acc: 0.63430 | in 55.64617 secs
+iter 781/782
+epoch 9| train loss: 679.24806, acc: 0.69234 | test loss: 165.11958, acc: 0.63830 | in 58.64315 secs
+
+
+
+
+
+train with layer optimization:
+iter 781/782
+epoch 0| train loss: 1253.66771, acc: 0.41564 | test loss: 221.96775, acc: 0.48550 | in 220.59226 secs
+iter 781/782
+epoch 1| train loss: 1016.70341, acc: 0.53240 | test loss: 199.11781, acc: 0.54400 | in 223.99522 secs
+iter 781/782
+epoch 2| train loss: 917.49431, acc: 0.58248 | test loss: 184.06984, acc: 0.58190 | in 233.15292 secs
+iter 781/782
+epoch 3| train loss: 855.41627, acc: 0.61253 | test loss: 177.78627, acc: 0.59770 | in 234.30841 secs
+iter 781/782
+epoch 4| train loss: 802.03983, acc: 0.63757 | test loss: 175.38091, acc: 0.60510 | in 252.05143 secs
+iter 781/782
+epoch 5| train loss: 757.87560, acc: 0.65435 | test loss: 166.84168, acc: 0.62680 | in 275.16554 secs
+iter 781/782
+epoch 6| train loss: 718.70920, acc: 0.67430 | test loss: 166.38325, acc: 0.62640 | in 227.55753 secs
+iter 781/782
+epoch 7| train loss: 690.07139, acc: 0.68808 | test loss: 165.01492, acc: 0.63260 | in 256.14042 secs
+iter 781/782
+epoch 8| train loss: 660.06624, acc: 0.70032 | test loss: 166.85458, acc: 0.62700 | in 240.88161 secs
+iter 781/782
+epoch 9| train loss: 633.20675, acc: 0.71303 | test loss: 164.18344, acc: 0.64560 | in 271.71621 secs

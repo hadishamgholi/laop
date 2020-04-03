@@ -6,30 +6,19 @@ import torchvision.transforms as transforms
 import config as con
 from models import Net
 from time import time
-from utils import accuracy
+from utils import accuracy, get_cifar10_data, set_random_seeds
 try:
     from apex import amp
 except:
     print('the apex module does not exists')
 
-transform = transforms.Compose(
-    [transforms.ToTensor(),
-     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-
-trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
-                                        download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=con.batch_size,
-                                          shuffle=True, num_workers=con.num_worker)
-
-
-testset = torchvision.datasets.CIFAR10(root='./data', train=False,
-                                       download=True, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=con.batch_size,
-                                         shuffle=False, num_workers=con.num_worker)
+set_random_seeds(con.random_seed)
+trainset, trainloader, testset, testloader = next(get_cifar10_data())
 
 
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
 
 
 if con.use_cuda:
@@ -43,26 +32,37 @@ criterion = nn.CrossEntropyLoss()
 print('num of net parameters:', sum(p.numel() for p in net.parameters()))
 
 
+
 def train():
     epoch_train_loss = 0
     epoch_train_acc = 0
-    for batch in iter(trainloader):
-        optimizer.zero_grad()
+    for i, batch in enumerate(iter(trainloader)):
+        print(f'\riter {i}/{len(trainloader)}', end='')
         inputs, labels = batch
         if con.use_cuda:
             inputs, labels = inputs.cuda(), labels.cuda()
+        num_parmas = sum(1 for _ in net.parameters())
+        for p in net.parameters():
+            # for pp in net.parameters():
+            #     pp.requires_grad_(False)
+            # p.requires_grad_(True)
+            # optimizer.param_groups = []
+            # optimizer.add_param_group(
+            #     {'params' : [p]}
+            # )
+            out = net(inputs)
+            loss = criterion(out, labels)
 
-        out = net(inputs)
-        loss = criterion(out, labels)
-        if con.use_apex:
-            with amp.scale_loss(loss, optimizer) as scaled_loss:
-                scaled_loss.backward()
-        else:
-            loss.backward()
-
-        optimizer.step()
-        epoch_train_loss += loss.item()
-        epoch_train_acc += accuracy(out, labels)
+            optimizer.zero_grad()
+            if con.use_apex:
+                with amp.scale_loss(loss, optimizer) as scaled_loss:
+                    scaled_loss.backward()
+            else:
+                loss.backward()
+            optimizer.step()
+            epoch_train_loss += loss.item() / num_parmas
+            epoch_train_acc += accuracy(out, labels) / num_parmas
+    print()
     return epoch_train_loss, epoch_train_acc / len(trainset)
 
 
