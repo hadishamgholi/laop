@@ -6,7 +6,7 @@ import torchvision.transforms as transforms
 import config as con
 from models import Net
 from time import time
-from utils import accuracy, get_cifar10_data, set_random_seeds
+from utils import accuracy, get_cifar10_data, set_random_seeds, get_model_layers, get_prms_rqr_grd
 try:
     from apex import amp
 except:
@@ -41,15 +41,16 @@ def train():
         inputs, labels = batch
         if con.use_cuda:
             inputs, labels = inputs.cuda(), labels.cuda()
-        num_parmas = sum(1 for _ in net.parameters())
-        for p in net.parameters():
-            # for pp in net.parameters():
-            #     pp.requires_grad_(False)
-            # p.requires_grad_(True)
-            # optimizer.param_groups = []
-            # optimizer.add_param_group(
-            #     {'params' : [p]}
-            # )
+            
+        lyrs, lyrs_cnt = get_model_layers(net, True)
+        for l in reversed(lyrs):
+            for ll in lyrs:
+                ll.requires_grad_(False)
+            l.requires_grad_(True)
+            optimizer.param_groups = []
+            optimizer.add_param_group(
+                {'params' : get_prms_rqr_grd(net)}
+            )
             out = net(inputs)
             loss = criterion(out, labels)
 
@@ -60,8 +61,8 @@ def train():
             else:
                 loss.backward()
             optimizer.step()
-            epoch_train_loss += loss.item() / num_parmas
-            epoch_train_acc += accuracy(out, labels) / num_parmas
+            epoch_train_loss += loss.item() / lyrs_cnt
+            epoch_train_acc += accuracy(out, labels) / lyrs_cnt
     print()
     return epoch_train_loss, epoch_train_acc / len(trainset)
 
