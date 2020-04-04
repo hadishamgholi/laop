@@ -12,28 +12,57 @@ class Net(nn.Module):
 
         # )
         self.conv = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=5),
+            nn.Conv2d(3, 16, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv2d(16, 32, kernel_size=5),
+            nn.BatchNorm2d(16),
+
+            nn.Conv2d(16, 16, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv2d(32, 48, kernel_size=5),
+            nn.BatchNorm2d(16),
+
+            nn.Conv2d(16, 16, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv2d(48, 64, kernel_size=5),
+            nn.BatchNorm2d(16),
+
+            nn.MaxPool2d(2),
+            nn.Dropout(.2),
+            ################
+            nn.Conv2d(16, 64, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv2d(64, 80, kernel_size=5),
+            nn.BatchNorm2d(64),
+
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv2d(80, 96, kernel_size=5),
+            nn.BatchNorm2d(64),
+
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv2d(96, 112, kernel_size=5),
+            nn.BatchNorm2d(64),
+
+
+            nn.MaxPool2d(2),
+            nn.Dropout(.2),
+            ################
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Conv2d(112, 128, kernel_size=3),
+            nn.BatchNorm2d(128),
+
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
             nn.ReLU(),
+            nn.BatchNorm2d(128),
+
+            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(128),
+
+            nn.MaxPool2d(2),
+            nn.Dropout(.2)
         )
 
         self.fc = nn.Sequential(
-            nn.Linear(128 * 2 * 2, 256),
-            nn.Linear(256, 64),
-            nn.Linear(64, 10)
+            nn.Linear(128 * 4 * 4, 256),
+            nn.Dropout(.2),
+            nn.Linear(256, 10)
 
         )
 
