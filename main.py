@@ -93,6 +93,5 @@ def run():
             e, tr_loss, tr_acc, te_loss, te_acc, t
         ))
 
-
 if __name__ == "__main__":
-    run()
+    pass
